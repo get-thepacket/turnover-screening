@@ -1,0 +1,1 @@
+export const NUMBER_OF_SAMPLE_DATA = 100;

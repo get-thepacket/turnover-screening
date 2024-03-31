@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Profile {
+    id        Int      @id @default(autoincrement())
+    name      String @db.VarChar(255)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    email     String @unique @db.VarChar(255)
+    passwordHash String
+
+    profileToCategory ProfileCategoryMap[]
+
+    @@index([id])
+}
+
+model Category {
+    id      Int      @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    isDeleted Boolean @default(false)
+    name    String   @db.VarChar(255)
+
+    @@index([id])
+}
+
+model ProfileCategoryMap {
+    id          Int         @id @default(autoincrement())
+    categoryIds  Int[]
+    profileId   Int
+
+    profile     Profile     @relation(fields: [profileId], references: [id])
+
+    @@index([id, profileId])
+
+}
